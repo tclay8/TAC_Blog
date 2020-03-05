@@ -1,0 +1,84 @@
+﻿@using TAC_Blog.Models
+@model LoginViewModel
+@{
+    ViewBag.Title = "Log In";
+}
+<section id="headerwrap" class="dark-wrapper opaqued parallax" data-parallax="scroll" data-speed="0.7">
+    <div class="section-inner">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 mt30 text-center wow fadeIn" data-wow-delay="0.5s">
+
+                    <h2 class="heading-font">@ViewBag.Title.</h2>
+                    <div class="row">
+                        <div class="col-md-offset- col-md-8 dark-opaqued">
+                            <section id="loginForm" class="form-group dark-opaqued">
+                                @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <h4>Use a local account to log in.</h4>
+                                    <hr />
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                    <div class="form-group">
+                                        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+                                        <div class="col-md-9">
+                                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+                                        <div class="col-md-9">
+                                            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-md-offset-2 col-md-3">
+                                                <input type="submit" value="Log in" class="btn btn-primary" style="color: white"/>
+                                            </div>
+                                            <div class="col-md-3 secondary-font">
+                                                <div class="checkbox">
+                                                    @Html.CheckBoxFor(m => m.RememberMe)
+                                                    @Html.LabelFor(m => m.RememberMe)
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p></p>
+                                        </div>
+                                        <div class="row">
+                                            <div class="text-center btn-group">
+                                                    @Html.ActionLink("Register as a new user", "Register", "Account", new { returnUrl = Url.Action("Index", "BlogPosts") }, new { @class = "btn btn-primary" })
+                                                    @Html.ActionLink("Forgot your password?", "ForgotPassword", "Account", new { returnUrl = ViewBag.ReturnUrl }, new { @class = "btn btn-primary" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </section>
+                        </div>
+                        <div class="col-md-4 dark-opaqued">
+                            <section id="socialLoginForm" class="dark-opaqued">
+                                
+                                @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
+                            </section>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script type="text/javascript">
+    $(document).ready(function () {
+        'use strict';
+        jQuery('#headerwrap').backstretch([
+            "/Template/assets/img/other/blog.jpg"
+        ], { duration: 8000, fade: 100 });
+    });</script>
+
+}

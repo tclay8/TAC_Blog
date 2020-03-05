@@ -1,0 +1,224 @@
+﻿@model TAC_Blog.Models.BlogPost
+
+
+
+    <section id="headerwrap" class="dark-wrapper opaqued parallax" data-parallax="scroll" data-speed="0.7">
+        <div class="section-inner">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12 mt30 text-center wow fadeIn" data-wow-delay="0.5s">
+                        <h2 class="section-heading">@Model.Title</h2>
+                        <div class="item-metas text-muted mb30 white">
+                            @*<span class="meta-item"><i class="pe-icon pe-7s-folder"></i> POSTED IN <span class="secondary-font">News</span></span>
+                            <span class="meta-item"><i class="pe-icon pe-7s-ticket"></i> TAGS <span class="secondary-font">Photography</span></span>*@
+                            <span class="meta-item"><i class="pe-icon pe-7s-user"></i> AUTHOR <span class="secondary-font">Tara Clay</span></span>
+                            <span class="meta-item"><i class="pe-icon pe-7s-comment"></i> COMMENTS <span class="secondary-font">@Model.Comments.Count</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+<section>
+    <div class="section-inner dark-wrapper">
+        @if (User.IsInRole("Admin"))
+        {
+            
+            <div class="btn-group btn-group-vertical pull-right">
+                @Html.ActionLink("Edit Blog", "Edit", "BlogPosts", new { id = Model.Id }, new { @class = "btn btn-primary" })
+                @Html.ActionLink("Delete Blog", "Delete", "BlogPosts", new { id = Model.Id }, new { @class = "btn btn-primary" })
+            </div>
+        }
+
+        <div class="container">
+            <div class="row">
+                <div id="post-content" class="col-sm-12 blog-item mb60 wow fadeIn" data-wow-delay="0.5s">
+                    <div class="row">
+                        <div class="col-xs-2">
+                            <div class="post-date heading-font">
+                                <span class="the-date">@Model.Created.Day</span>
+                                <span class="the-month">@Model.Created.Month , @Model.Created.Year</span>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-10 single-post-content">
+                            @Model.Body
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-offset-2 col-xs-10">
+                        @if (Model.MediaURL != null)
+                        {<img class="img-thumbnail" style="width:400px;height:350px;" src="@Model.MediaURL" alt="" />}
+
+                        </div>
+                    </div>
+                </div>
+
+                <div id="comments-list" class="col-xs-10 col-xs-offset-2 gap wow fadeIn" data-wow-delay="0.5s">
+                    <div class="mt60 mb50 single-section-title">
+                        <h3>@Model.Comments.Count Comments</h3>
+                    </div>
+                    <div class="media">
+                        @foreach (var item in Model.Comments)
+                        {
+                            <div class="pull-left">
+                                <img class="avatar comment-avatar img-circle" src="http://lorempixel.com/g/80/80/people/9" alt="">
+                            </div>
+                            <div class="media-body">
+                                <div class="well">
+                                    <div class="media-heading">
+                                        <span class="heading-font">@item.Author.FirstName @item.Author.LastName</span>&nbsp; <small>@item.Created.Month/@item.Created.Day/@item.Created.Year</small>
+                                    </div>
+                                    <p>@item.Body</p>
+
+                                    @if (User.IsInRole("Admin") || User.IsInRole("Moderator"))
+                                    {
+                                        <div class="btn-group">
+                                            @Html.ActionLink("Edit", "Edit", "Comments", new { id = item.Id }, new { @class = "btn btn-sm btn-primary" })
+                                            @Html.ActionLink("Delete", "Delete", "Comments", new { id = item.Id }, new { @class = "btn btn-sm btn-primary" })
+                                        </div>
+                                    }
+                                    <a class="btn btn-primary pull-right" style="color:white" href="@Url.Action("Create", "Comments")">Reply</a>
+                                </div>
+                            </div>
+                        }
+
+                        @*<div class="media">
+                        <div class="pull-left">
+                            <img class="avatar comment-avatar img-circle" src="http://lorempixel.com/g/80/80/people/5" alt="">
+                        </div>
+                        <div class="media-body">
+                            <div class="well">
+                                <div class="media-heading">
+                                    <span class="heading-font">Dave Evans</span>&nbsp; <small>30th Jan, 2015</small>
+                                </div>
+                                <p>Wicket longer admire do barton vanity itself do in it. Preferred to sportsmen it engrossed listening. Park gate sell they west hard for the. Abode stuff noisy manor blush yet the far. Up colonel so between removed so do.</p>
+                                <a class="btn btn-primary pull-right mt30" href="#">Reply</a>
+                            </div>
+                        </div>*@
+                        @*</div>*@<!--/.media-->
+                        @*</div>
+                        </div>*@<!--/.media-->
+                        @*<div class="media">
+                        <div class="pull-left">
+                            <img class="avatar comment-avatar img-circle" src="http://lorempixel.com/g/80/80/people/6" alt="">
+                        </div>
+                        <div class="media-body">
+                            <div class="well">
+                                <div class="media-heading">
+                                    <span class="heading-font">Dave Evans</span>&nbsp; <small>30th Jan, 2015</small>
+                                </div>
+                                <p>Quitting informed concerns can men now. Projection to or up conviction uncommonly delightful continuing. In appetite ecstatic opinions hastened by handsome admitted.</p>
+                                <a class="btn btn-primary pull-right mt30" href="#">Reply</a>
+                            </div>
+                        </div>*@
+                        @*</div*@<!--/.media-->
+
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <div id="comments-form" class="row wow fadeIn" data-wow-delay="0.5s">
+                                <div class="col-md-12">
+                                    <div class="mt60 mb50 single-section-title">
+                                        <h3>Leave A Comment</h3>
+                                    </div>
+                                    <div id="message"></div>
+                                    <form method="post" action="@Url.Action("Create","Comments")" id="commentform" class="comment-form">
+                                        @Html.AntiForgeryToken()
+                                        @Html.Hidden("BlogId", Model.Id)
+                                        <textarea name="comments" class="form-control" id="comments" placeholder="Your Message *" required data-validation-required-message="Please enter a message."></textarea>
+                                        <button class="btn btn-primary pull-right" style="color:white" type="submit">Reply</button>
+
+
+                                    </form>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <p>@Html.ActionLink("Please login to leave a comment", "Login", "Account", new { returnUrl = Url.Action("Details", "Blogs", new { Slug = Model.Slug }) }, new { @class = "btn btn-primary" })</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+@*@{
+        ViewBag.Title = "Details";
+    }*@
+
+@*<h2>Details</h2>
+
+    <div>
+        <h4>BlogPost</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Created)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Created)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Updated)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Updated)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Title)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Title)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Slug)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Slug)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Body)
+            </dt>
+
+            <dd>
+                @Html.Raw(Model.Body)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.MediaURL)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.MediaURL)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Published)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Published)
+            </dd>
+
+        </dl>
+    </div>
+    <p>
+        @Html.ActionLink("Back to List", "Index")
+    </p>*@
+
